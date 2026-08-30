@@ -1,5 +1,7 @@
 appId: dev.selfhostauth.app
 productName: selfhostauth
+executableName: selfhostauth
+artifactName: "${productName}-${version}-${arch}.${ext}"
 directories:
   output: dist/installers
   buildResources: build
