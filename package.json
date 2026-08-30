@@ -1,0 +1,28 @@
+{
+  "name": "selfhostauth",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Self-hosted multi-platform authenticator (TOTP) with encrypted cloud sync",
+  "packageManager": "pnpm@10.13.1",
+  "pnpm": {
+    "onlyBuiltDependencies": [
+      "electron",
+      "esbuild",
+      "better-sqlite3"
+    ]
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "typecheck": "pnpm -r typecheck",
+    "dev:server": "pnpm --filter @selfhostauth/server dev",
+    "dev:desktop": "pnpm --filter @selfhostauth/desktop dev",
+    "dev:extension": "pnpm --filter @selfhostauth/extension dev",
+    "dev:mobile": "pnpm --filter @selfhostauth/mobile start",
+    "build:extension": "pnpm --filter @selfhostauth/extension build",
+    "build:desktop": "pnpm --filter @selfhostauth/desktop build"
+  }
+}

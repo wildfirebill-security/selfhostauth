@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>selfhostauth — Options</title>
+    <link rel="stylesheet" href="options.css" />
+  </head>
+  <body>
+    <main class="card">
+      <h1>◈ selfhostauth</h1>
+
+      <section id="auth-section">
+        <h2>Connect to your server</h2>
+        <label>
+          Server URL
+          <input id="server-url" type="url" placeholder="https://auth.example.com" />
+        </label>
+        <label>
+          Username
+          <input id="username" type="text" autocomplete="username" />
+        </label>
+        <label>
+          Password
+          <input id="password" type="password" autocomplete="current-password" />
+        </label>
+        <label class="check">
+          <input id="register" type="checkbox" />
+          <span>Create a new account</span>
+        </label>
+        <button id="connect" class="primary">Connect</button>
+        <p id="auth-status" class="status"></p>
+      </section>
+
+      <section id="vault-section" class="hidden">
+        <h2>
+          Vault
+          <button id="sync" class="small" title="Sync now">⟳ Sync</button>
+          <button id="signout" class="small danger" title="Sign out">Sign out</button>
+        </h2>
+        <p class="muted" id="whoami"></p>
+        <p id="sync-status" class="status"></p>
+
+        <h3>Add authenticator</h3>
+        <label>
+          otpauth:// URI or base32 secret
+          <input id="new-secret" type="text" placeholder="otpauth://totp/GitHub:you?secret=…" />
+        </label>
+        <label>
+          Name
+          <input id="new-name" type="text" placeholder="GitHub" />
+        </label>
+        <button id="add" class="primary">Add</button>
+        <p id="add-status" class="status"></p>
+      </section>
+    </main>
+    <script type="module" src="options.js"></script>
+  </body>
+</html>

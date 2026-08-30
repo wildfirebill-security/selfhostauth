@@ -1,0 +1,23 @@
+{
+  "expo": {
+    "name": "selfhostauth",
+    "slug": "selfhostauth",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "dark",
+    "backgroundColor": "#0f1117",
+    "ios": {
+      "supportsTablet": true,
+      "bundleIdentifier": "com.selfhostauth.app"
+    },
+    "android": {
+      "package": "com.selfhostauth.app",
+      "adaptiveIcon": {
+        "backgroundColor": "#0f1117"
+      }
+    },
+    "web": {
+      "bundler": "metro"
+    }
+  }
+}

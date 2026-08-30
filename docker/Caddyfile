@@ -1,0 +1,20 @@
+# Caddy reverse proxy for TLS (recommended for production — mobile apps
+# and browser extensions require HTTPS for non-localhost servers).
+# Replace auth.example.com with your domain.
+#
+#     caddy run --config Caddyfile
+# or add to docker-compose as a service with ports 80/443.
+
+auth.example.com {
+    reverse_proxy selfhostauth:8787
+    encode gzip
+    header {
+        Strict-Transport-Security "max-age=31536000"
+        X-Content-Type-Options "nosniff"
+        X-Frame-Options "DENY"
+        Referrer-Policy "no-referrer"
+    }
+    request_body {
+        max_size 1MB
+    }
+}

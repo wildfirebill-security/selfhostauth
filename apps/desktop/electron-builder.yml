@@ -1,0 +1,30 @@
+appId: dev.selfhostauth.app
+productName: selfhostauth
+directories:
+  output: dist/installers
+  buildResources: build
+files:
+  - dist/main/**/*
+  - dist/renderer/**/*
+  - package.json
+asar: true
+win:
+  target:
+    - nsis
+nsis:
+  oneClick: false
+  allowToChangeInstallationDirectory: true
+  perMachine: false
+mac:
+  target:
+    - dmg
+  category: public.app-category.utilities
+  hardenedRuntime: true
+linux:
+  target:
+    - AppImage
+    - deb
+    - rpm
+  category: Utility
+  maintainer: you@example.com
+npmRebuild: false

@@ -1,0 +1,58 @@
+name: Mobile (EAS)
+
+# Recommended path: builds iOS + Android in Expo's cloud (EAS Build),
+# so no local Android SDK / Xcode is required on the runner.
+#
+# Setup (one-time):
+#   1. npx eas-cli login && npx eas-cli init (inside apps/mobile)
+#   2. Add your Expo access token as a repository secret named EXPO_TOKEN
+#      (https://expo.dev/settings/access-tokens)
+#   3. Configure signing: npx eas-cli credentials (or EAS Managed for Android)
+#
+# Produces: signed .ipa (iOS) + .aab/.apk (Android) on EAS servers, listed
+# at https://expo.dev/accounts/<you>/projects/selfhostauth/builds
+
+on:
+  push:
+    branches: [main]
+    tags: ["v*"]
+  workflow_dispatch:
+
+concurrency:
+  group: eas-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  eas-build:
+    name: EAS build (android + ios, production)
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    env:
+      EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.13.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Check EXPO_TOKEN
+        if: env.EXPO_TOKEN == ''
+        run: |
+          echo "::error::EXPO_TOKEN secret is not set. Add it in repo Settings → Secrets → Actions (https://expo.dev/settings/access-tokens), then re-run."
+          exit 1
+
+      - name: EAS build (all platforms)
+        working-directory: apps/mobile
+        run: npx --yes eas-cli@latest build --platform all --profile production --non-interactive

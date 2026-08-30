@@ -1,0 +1,23 @@
+services:
+  selfhostauth:
+    build: .
+    container_name: selfhostauth
+    restart: unless-stopped
+    ports:
+      - "8787:8787"
+    environment:
+      PORT: 8787
+      HOST: 0.0.0.0
+      DATA_DIR: /data
+      # Set a stable key for production (32 bytes base64):
+      #   node -e "console.log(crypto.randomBytes(32).toString('base64'))"
+      ENCRYPTION_KEY: ""
+      ALLOW_REGISTRATION: "true"
+      SESSION_TTL_DAYS: "30"
+    volumes:
+      - ./data:/data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8787/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3

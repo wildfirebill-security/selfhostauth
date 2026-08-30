@@ -1,0 +1,25 @@
+[Unit]
+Description=selfhostauth TOTP sync server
+After=network.target
+
+[Service]
+Type=simple
+User=selfhostauth
+WorkingDirectory=/opt/selfhostauth/server
+Environment=PORT=8787
+Environment=HOST=0.0.0.0
+Environment=DATA_DIR=/var/lib/selfhostauth
+# Generate once and pin it: node -e "console.log(crypto.randomBytes(32).toString('base64'))"
+Environment=ENCRYPTION_KEY=CHANGE_ME
+ExecStart=/usr/bin/node dist/index.js
+Restart=on-failure
+RestartSec=3
+# Hardening
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/selfhostauth
+
+[Install]
+WantedBy=multi-user.target
