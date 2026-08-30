@@ -10,8 +10,6 @@ name: Mobile (local build)
 # Trigger with "Run workflow" or on tags.
 
 on:
-  push:
-    tags: ["v*"]
   workflow_dispatch:
 
 jobs:

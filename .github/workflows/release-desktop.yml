@@ -47,7 +47,7 @@ jobs:
         run: pnpm install --frozen-lockfile
 
       - name: Build
-        run: pnpm --filter @selfhostauth/desktop build
+        run: pnpm --filter @selfhostauth/core --filter @selfhostauth/client build && pnpm --filter @selfhostauth/desktop build
 
       - name: Package (${{ matrix.target }})
         run: pnpm --filter @selfhostauth/desktop ${{ matrix.script }}
