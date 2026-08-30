@@ -31,7 +31,7 @@ jobs:
       EXPO_TOKEN: ${{ secrets.EXPO_TOKEN }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
 
       - name: Setup pnpm
         uses: pnpm/action-setup@v4
@@ -39,7 +39,7 @@ jobs:
           version: 10.13.1
 
       - name: Setup Node
-        uses: actions/setup-node@v4
+        uses: actions/setup-node@v5
         with:
           node-version: 22
           cache: pnpm
@@ -47,12 +47,17 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Build
+        run: pnpm build
+
       - name: Check EXPO_TOKEN
-        if: env.EXPO_TOKEN == ''
         run: |
-          echo "::error::EXPO_TOKEN secret is not set. Add it in repo Settings → Secrets → Actions (https://expo.dev/settings/access-tokens), then re-run."
-          exit 1
+          if [ -z "$EXPO_TOKEN" ]; then
+            echo "::warning::EXPO_TOKEN secret is not set — skipping EAS build. Add it in repo Settings → Secrets → Actions (https://expo.dev/settings/access-tokens), then re-run."
+            echo "SKIP_EAS=1" >> "$GITHUB_ENV"
+          fi
 
       - name: EAS build (all platforms)
+        if: env.SKIP_EAS != '1'
         working-directory: apps/mobile
         run: npx --yes eas-cli@latest build --platform all --profile production --non-interactive

@@ -80,10 +80,10 @@ export async function ensureHostAccess(serverUrl: string): Promise<boolean> {
 export async function syncVault(): Promise<{ ok: boolean; error?: string; count: number }> {
   const settings = await getSettings();
   if (!settings.serverUrl || !settings.token) {
-    return { ok: false, error: "Not configured — open extension options to connect." };
+    return { ok: false, error: "Not configured — open extension options to connect.", count: 0 };
   }
   if (!(await ensureHostAccess(settings.serverUrl))) {
-    return { ok: false, error: "Permission denied for server host." };
+    return { ok: false, error: "Permission denied for server host.", count: 0 };
   }
   const client = makeClient(settings);
   try {
@@ -122,7 +122,7 @@ export async function syncVault(): Promise<{ ok: boolean; error?: string; count:
     await refreshCodes(arr);
     return { ok: true, count: arr.length };
   } catch (e) {
-    return { ok: false, error: e instanceof Error ? e.message : String(e) };
+    return { ok: false, error: e instanceof Error ? e.message : String(e), count: 0 };
   }
 }
 
