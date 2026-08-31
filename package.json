@@ -1,6 +1,6 @@
 {
   "name": "selfhostauth",
-  "version": "0.1.5",
+  "version": "0.1.6",
   "private": true,
   "description": "Self-hosted multi-platform authenticator (TOTP) with encrypted cloud sync",
   "packageManager": "pnpm@10.13.1",
