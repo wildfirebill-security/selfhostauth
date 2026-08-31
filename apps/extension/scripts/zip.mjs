@@ -15,11 +15,16 @@ if (!existsSync(dist)) {
 
 rmSync(zipPath, { force: true });
 
+const isWin = process.platform === "win32";
 try {
-  execSync(
-    `powershell -NoProfile -Command "Compress-Archive -Path '${dist.replace(/'/g, "''")}\\*' -DestinationPath '${zipPath.replace(/'/g, "''")}' -Force"`,
-    { stdio: "inherit" },
-  );
+  if (isWin) {
+    execSync(
+      `powershell -NoProfile -Command "Compress-Archive -Path '${dist.replace(/'/g, "''")}\\*' -DestinationPath '${zipPath.replace(/'/g, "''")}' -Force"`,
+      { stdio: "inherit" },
+    );
+  } else {
+    execSync(`cd "${root}" && zip -r -q "${zipPath}" dist`, { stdio: "inherit" });
+  }
   console.log("zipped →", zipPath);
 } catch {
   console.log("Zip failed; dist/ is still ready to load as an unpacked extension.");
