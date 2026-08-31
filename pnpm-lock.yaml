@@ -6,6 +6,7 @@ settings:
 
 overrides:
   tar: ^7.5.17
+  builder-util-runtime: ^9.7.0
 
 importers:
 
@@ -2007,8 +2008,8 @@ packages:
   buffer@5.7.1:
     resolution: {integrity: sha512-EHcyIPBQ4BSGlvjB16k5KgAJ27CIsHY/2JBmCRReo48y9rQ3MaUzWX3KVlBa4U7MyX02HdVj0K7C3WaB3ju7FQ==}
 
-  builder-util-runtime@9.2.10:
-    resolution: {integrity: sha512-6p/gfG1RJSQeIbz8TK5aPNkoztgY1q5TgmGFMAXcY8itsGW6Y2ld1ALsZ5UJn8rog7hKF3zHx5iQbNQ8uLcRlw==}
+  builder-util-runtime@9.7.0:
+    resolution: {integrity: sha512-g/kR520giAFYkSXTzcmF3kqQq7wi8F6N6SzeDgZrqTBN+VHdmgWOyTdD1yD7AATDId/yXLvuP34CxW46/BwCdw==}
     engines: {node: '>=12.0.0'}
 
   builder-util@25.1.7:
@@ -5713,7 +5714,9 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
+      - bufferutil
       - supports-color
+      - utf-8-validate
 
   '@react-native/normalize-colors@0.76.9': {}
 
@@ -6023,7 +6026,7 @@ snapshots:
       async-exit-hook: 2.0.1
       bluebird-lst: 1.0.9
       builder-util: 25.1.7
-      builder-util-runtime: 9.2.10
+      builder-util-runtime: 9.7.0
       chromium-pickle-js: 0.2.0
       config-file-ts: 0.2.8-rc1
       debug: 4.4.3
@@ -6302,7 +6305,7 @@ snapshots:
       base64-js: 1.5.1
       ieee754: 1.2.1
 
-  builder-util-runtime@9.2.10:
+  builder-util-runtime@9.7.0:
     dependencies:
       debug: 4.4.3
       sax: 1.6.1
@@ -6315,7 +6318,7 @@ snapshots:
       '@types/debug': 4.1.13
       app-builder-bin: 5.0.0-alpha.10
       bluebird-lst: 1.0.9
-      builder-util-runtime: 9.2.10
+      builder-util-runtime: 9.7.0
       chalk: 4.1.2
       cross-spawn: 7.0.6
       debug: 4.4.3
@@ -6597,7 +6600,7 @@ snapshots:
     dependencies:
       app-builder-lib: 25.1.8(dmg-builder@25.1.8)(electron-builder-squirrel-windows@25.1.8)
       builder-util: 25.1.7
-      builder-util-runtime: 9.2.10
+      builder-util-runtime: 9.7.0
       fs-extra: 10.1.0
       iconv-lite: 0.6.3
       js-yaml: 4.3.1
@@ -6655,7 +6658,7 @@ snapshots:
     dependencies:
       app-builder-lib: 25.1.8(dmg-builder@25.1.8)(electron-builder-squirrel-windows@25.1.8)
       builder-util: 25.1.7
-      builder-util-runtime: 9.2.10
+      builder-util-runtime: 9.7.0
       chalk: 4.1.2
       dmg-builder: 25.1.8(electron-builder-squirrel-windows@25.1.8)
       fs-extra: 10.1.0
@@ -6672,7 +6675,7 @@ snapshots:
     dependencies:
       '@types/fs-extra': 9.0.13
       builder-util: 25.1.7
-      builder-util-runtime: 9.2.10
+      builder-util-runtime: 9.7.0
       chalk: 4.1.2
       fs-extra: 10.1.0
       lazy-val: 1.0.5

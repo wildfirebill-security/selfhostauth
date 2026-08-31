@@ -12,8 +12,7 @@
     ],
     "overrides": {
       "tar": "^7.5.17",
-      "image-size": "^2.0.3",
-      "builder-util-runtime": "^9.7.1"
+      "builder-util-runtime": "^9.7.0"
     }
   },
   "engines": {
