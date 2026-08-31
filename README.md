@@ -9,7 +9,7 @@
 [![Self-Hosted](https://img.shields.io/badge/self--hosted-%E2%9C%93-success)](docker/docker-compose.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-**SelfHostAuth is a self-hosted 2FA authenticator** that syncs your TOTP & HOTP one-time codes across every device without trusting Google, Authy, or any third-party cloud. Run the lightweight **Node.js + SQLite sync server** on your home server, NAS, Raspberry Pi, or VPS, and access your 2FA codes from a native **desktop app (Electron)**, **mobile app (iOS/Android via bare React Native — 100% OSS, no Expo)**, and **browser extension (Chrome/Edge/Firefox MV3)** — all offline-capable and end-to-end encrypted at rest.
+**SelfHostAuth is a self-hosted 2FA authenticator** that syncs your TOTP & HOTP one-time codes across every device without trusting Google, Authy, or any third-party cloud. Run the lightweight **Node.js + SQLite sync server** on your home server, NAS, Raspberry Pi, or VPS, and access your 2FA codes from a **browser Web UI**, native **desktop app (Electron)**, **mobile app (iOS/Android via bare React Native — 100% OSS, no Expo)**, and **browser extension (Chrome/Edge/Firefox MV3)** — all offline-capable and end-to-end encrypted at rest.
 
 *Keywords: self-hosted authenticator, self-hosted 2FA, open source 2FA, TOTP server, HOTP, OTP authenticator, 2FA sync, privacy authenticator, Google Authenticator alternative, Authy alternative*
 
@@ -25,6 +25,7 @@
 | **Offline codes** | ✅ Cached + local TOTP | ✅ | ✅ | ✅ |
 | **Desktop (Win/Mac/Linux)** | ✅ Electron (NSIS/DMG/AppImage, deb, rpm) | ❌ | ❌ (discontinued) | ❌ |
 | **Browser extension** | ✅ MV3 (Chrome/Edge/Firefox) | ❌ | ❌ | ❌ |
+| **Web UI** | ✅ Served from your server at `/` | ❌ | ❌ | ❌ |
 | **Self-host anywhere** | ✅ Docker, bare metal, Raspberry Pi, NAS | — | — | — |
 
 **Perfect for:** homelabbers, privacy advocates, teams that need a **self-hosted OTP / 2FA server**, and anyone searching for a **Google Authenticator self-hosted alternative** or **Authy replacement**.
@@ -40,6 +41,7 @@
 - **Revision-based sync** — push/pull with last-write-wins + tombstones, so delete on one device deletes everywhere
 - **Offline-first** — clients cache the vault locally and compute TOTP without the server (pure-JS HMAC fallback for React Native)
 - **Zero native deps on the server** — Node 22+ built-in `node:sqlite` + `node:crypto`; <50 MB Docker image
+- **Web vault** — full TOTP vault at `https://your-host/` — no install needed, served directly from your Docker image
 - **Runs anywhere** — Docker Compose, systemd, bare metal on **Windows, macOS, and 8+ Linux distros** (Ubuntu, Debian, Fedora, Arch, etc. via AppImage/deb/rpm)
 
 ```
@@ -71,6 +73,7 @@
 | `apps/desktop` | **Desktop authenticator** — Electron for Windows / macOS / Linux |
 | `apps/extension` | **Browser extension** — Chrome / Edge / Firefox (Manifest V3) |
 | `apps/mobile` | **Mobile 2FA app** — bare React Native 0.76 for iOS & Android (fully OSS) |
+| `apps/web` | **Web vault** — Vite SPA served from the server at `/` (no separate deploy) |
 | `docker` | `Dockerfile`, `docker-compose.yml`, `Caddyfile`, `systemd` unit |
 
 ---
@@ -95,7 +98,11 @@ Verify your **self-hosted TOTP server** is up:
 ```bash
 curl http://127.0.0.1:8787/api/v1/info
 # {"name":"selfhostauth","version":"0.1.6","features":{"sync":true,...}}
+
+# Web vault is at http://127.0.0.1:8787/ (served from the same container)
 ```
+
+> **Docker already includes the Web UI** — `https://your-host/` *is* your vault. No separate frontend deployment.
 
 ---
 
@@ -114,6 +121,15 @@ pnpm package:linux      # → AppImage + .deb + .rpm (run on Linux)
 ```
 
 Open the app → point it at your server URL → **Register** → start adding your 2FA codes.
+
+### Web Vault (no install — in your browser)
+
+Just open `https://your-host/` — the Docker image serves `apps/web` at `/`. Log in, search, add via `otpauth://` or base32, copy codes with one click, and sync. Works on any browser; data stays in your server's SQLite + your browser's localStorage cache. No separate deploy.
+
+```bash
+# Local dev (proxies /api to the server):
+cd apps/web && pnpm dev   # → http://localhost:5174
+```
 
 ### Chrome / Edge / Firefox Extension (MV3)
 
@@ -244,10 +260,10 @@ Yes — SelfHostAuth is a drop-in, **open source alternative to Google Authentic
 Yes. Your TOTP secrets never leave your infrastructure unencrypted. They are AES-256-GCM encrypted at rest and your server is the only copy unless you enable backups. Use HTTPS + a strong `ENCRYPTION_KEY`.
 
 **What platforms are supported?**
-**Server:** Windows, macOS, and 8+ Linux distros (anywhere Node 22+ runs, via Docker or bare metal). **Clients:** Windows, macOS, Linux desktop; iOS & Android mobile; Chrome, Edge, Firefox extension.
+**Server:** Windows, macOS, and 8+ Linux distros (anywhere Node 22+ runs, via Docker or bare metal). **Clients:** Web vault (any browser at `https://your-host/`), Windows, macOS, Linux desktop; iOS & Android mobile; Chrome, Edge, Firefox extension.
 
 **Does it work offline?**
-Yes. All clients cache the vault and compute TOTP offline. You only need the server to add/sync/delete codes across devices.
+Yes. All clients (including the Web vault) cache the vault in localStorage and compute TOTP offline. You only need the server to add/sync/delete codes across devices.
 
 **How do I migrate from Google Authenticator / Authy / 2FAS / Aegis?**
 Export your codes as `otpauth://` URIs (Google Authenticator: Transfer → Export; Aegis: Export → plain JSON; 2FAS: backup file). In any SelfHostAuth client: **Add → paste the URI** → sync.
