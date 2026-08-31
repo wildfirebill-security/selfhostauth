@@ -23,6 +23,8 @@
     "dev:extension": "pnpm --filter @selfhostauth/extension dev",
     "dev:mobile": "pnpm --filter @selfhostauth/mobile start",
     "build:extension": "pnpm --filter @selfhostauth/extension build",
-    "build:desktop": "pnpm --filter @selfhostauth/desktop build"
+    "build:desktop": "pnpm --filter @selfhostauth/desktop build",
+    "vuln:check": "node scripts/check-vulnerabilities.mjs",
+    "vuln:check:json": "node scripts/check-vulnerabilities.mjs --json"
   }
 }

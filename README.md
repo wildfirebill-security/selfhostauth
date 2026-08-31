@@ -8,6 +8,7 @@
 [![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux%20%7C%20iOS%20%7C%20Android%20%7C%20Chrome%20%7C%20Firefox-lightgrey)](https://github.com/wildfirebill-security/selfhostauth/releases)
 [![Self-Hosted](https://img.shields.io/badge/self--hosted-%E2%9C%93-success)](docker/docker-compose.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
+[![Vulnerabilities](https://img.shields.io/badge/vulnerabilities-transparent%20%E2%80%94%20see%20VULNERABILITIES.md-informational)](VULNERABILITIES.md)
 
 **SelfHostAuth is a self-hosted 2FA authenticator** that syncs your TOTP & HOTP one-time codes across every device without trusting Google, Authy, or any third-party cloud. Run the lightweight **Node.js + SQLite sync server** on your home server, NAS, Raspberry Pi, or VPS, and access your 2FA codes from a **browser Web UI**, native **desktop app (Electron)**, **mobile app (iOS/Android via bare React Native — 100% OSS, no Expo)**, and **browser extension (Chrome/Edge/Firefox MV3)** — all offline-capable and end-to-end encrypted at rest.
 
@@ -212,6 +213,10 @@ sudo systemctl enable --now selfhostauth
 | `RATE_LIMIT_PER_MINUTE` | `20` | Per-IP auth rate limit |
 
 ---
+
+## Transparency — Vulnerabilities (100% Open)
+
+Every finding is disclosed in **[VULNERABILITIES.md](VULNERABILITIES.md)** — source deps, built executables, and Docker image — updated on every push and weekly by CI (`.github/workflows/vuln.yml`). No finding is hidden. Run `pnpm vuln:check` locally for the same report.
 
 ## Security Model — How Your 2FA Secrets Stay Safe
 

@@ -1,0 +1,108 @@
+name: Vulnerability scan
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  schedule:
+    - cron: "0 8 * * 1"  # Mondays 08:00 UTC
+  workflow_dispatch:
+
+permissions:
+  contents: write   # to commit VULNERABILITIES.md
+  security-events: write
+  pull-requests: read
+
+concurrency:
+  group: vuln-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  scan:
+    name: scan source + built + docker → VULNERABILITIES.md
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.13.1
+
+      - name: Setup Node
+        uses: actions/setup-node@v5
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build (so built-executable checks have artifacts)
+        run: pnpm build
+
+      # ── Source: pnpm audit (also run by CI, duplicated here for the report) ──
+      - name: pnpm audit (source deps)
+        run: pnpm audit --json > /tmp/pnpm-audit.json 2>&1 || true
+        continue-on-error: true
+
+      # ── Secrets: gitleaks ──
+      - name: Gitleaks (secrets)
+        uses: gitleaks/gitleaks-action@v2
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        continue-on-error: true
+
+      # ── Source + Docker: Trivy ──
+      - name: Trivy fs (source)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          scan-type: fs
+          scan-ref: .
+          severity: HIGH,CRITICAL
+          format: json
+          output: /tmp/trivy-fs.json
+        continue-on-error: true
+
+      - name: Build Docker image (for image scan)
+        run: docker build -t selfhostauth:test -f docker/Dockerfile . 2>&1 | tail -20
+        continue-on-error: true
+
+      - name: Trivy image (docker)
+        uses: aquasecurity/trivy-action@0.33.1
+        with:
+          image-ref: selfhostauth:test
+          severity: HIGH,CRITICAL
+          format: json
+          output: /tmp/trivy-image.json
+        continue-on-error: true
+
+      # ── Generate 100% open report ──
+      - name: Generate VULNERABILITIES.md
+        run: node scripts/check-vulnerabilities.mjs
+
+      - name: Show report
+        run: cat VULNERABILITIES.md
+
+      - name: Upload report artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: vulnerabilities-report
+          path: VULNERABILITIES.md
+
+      # Commit back to main only on push/schedule (not on PRs from forks)
+      - name: Commit updated VULNERABILITIES.md
+        if: github.event_name != 'pull_request'
+        run: |
+          if git diff --quiet VULNERABILITIES.md; then
+            echo "No changes to VULNERABILITIES.md"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add VULNERABILITIES.md
+          git commit -m "chore(security): update VULNERABILITIES.md [skip ci]"
+          git push
