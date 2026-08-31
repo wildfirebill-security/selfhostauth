@@ -56,15 +56,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         continue-on-error: true
 
-      # ── Source + Docker: Trivy ──
-      - name: Trivy fs (source)
-        uses: aquasecurity/trivy-action@0.36.0
+      # ── Source + Docker: Trivy (via setup-trivy + CLI — avoids trivy-action version pin issues) ──
+      - name: Setup Trivy
+        uses: aquasecurity/setup-trivy@v0.3.1
         with:
-          scan-type: fs
-          scan-ref: .
-          severity: HIGH,CRITICAL
-          format: json
-          output: /tmp/trivy-fs.json
+          cache: true
+
+      - name: Trivy fs (source)
+        run: trivy fs --severity HIGH,CRITICAL --format json --output /tmp/trivy-fs.json .
         continue-on-error: true
 
       - name: Build Docker image (for image scan)
@@ -72,12 +71,7 @@ jobs:
         continue-on-error: true
 
       - name: Trivy image (docker)
-        uses: aquasecurity/trivy-action@0.36.0
-        with:
-          image-ref: selfhostauth:test
-          severity: HIGH,CRITICAL
-          format: json
-          output: /tmp/trivy-image.json
+        run: trivy image --severity HIGH,CRITICAL --format json --output /tmp/trivy-image.json selfhostauth:test
         continue-on-error: true
 
       # ── Generate 100% open report ──
