@@ -1,5 +1,8 @@
 import Fastify, { FastifyInstance, FastifyRequest } from "fastify";
 import cors from "@fastify/cors";
+import fastifyStatic from "@fastify/static";
+import { existsSync } from "node:fs";
+import { join, dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 import {
   AuthResponse,
@@ -39,6 +42,30 @@ export function buildApp(deps: AppDeps): FastifyInstance {
   const app = Fastify({ logger: true });
 
   app.register(cors, { origin: true });
+
+  // Serve the web UI (apps/web/dist) at / — if built. Falls back to a
+  // tiny landing page that links to the API when web is not present.
+  const webRoot = join(dirname(fileURLToPath(import.meta.url)), "..", "..", "web", "dist");
+  if (existsSync(join(webRoot, "index.html"))) {
+    void app.register(fastifyStatic, { root: webRoot, prefix: "/" });
+    // SPA fallback: any non-API GET that missed a static file serves index.html
+    app.setNotFoundHandler((req, reply) => {
+      if (req.url.startsWith("/api/")) {
+        return reply.code(404).send({ error: "not_found", message: "Not found", status: 404 });
+      }
+      return reply.sendFile("index.html");
+    });
+  } else {
+    app.get("/", async (_req, reply) => {
+      return reply.type("text/html").send(
+        `<!doctype html><html><head><meta charset="utf-8"><title>selfhostauth</title></head>` +
+          `<body style="font-family:system-ui;padding:2rem;background:#0f1117;color:#e6e9f0">` +
+          `<h1>◈ selfhostauth</h1><p>API running. Build the web UI with <code>pnpm --filter @selfhostauth/web build</code> to serve it here.</p>` +
+          `<p><a style="color:#4f8cff" href="/api/v1/info">/api/v1/info</a> · <a style="color:#4f8cff" href="/health">/health</a></p>` +
+          `</body></html>`,
+      );
+    });
+  }
 
   /* ------------------------------------------------------ helpers */
 

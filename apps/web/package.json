@@ -1,0 +1,21 @@
+{
+  "name": "@selfhostauth/web",
+  "version": "0.1.6",
+  "private": true,
+  "description": "selfhostauth web UI — browser vault for the self-hosted server",
+  "type": "module",
+  "scripts": {
+    "build": "vite build",
+    "dev": "vite",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json"
+  },
+  "dependencies": {
+    "@selfhostauth/client": "workspace:*",
+    "@selfhostauth/core": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2",
+    "vite": "^6.0.0"
+  }
+}

@@ -12,6 +12,7 @@
   },
   "dependencies": {
     "@fastify/cors": "^10.0.1",
+    "@fastify/static": "^10.1.3",
     "@selfhostauth/client": "workspace:*",
     "@selfhostauth/core": "workspace:*",
     "fastify": "^5.2.0"

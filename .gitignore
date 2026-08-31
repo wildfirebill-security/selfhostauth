@@ -14,6 +14,7 @@ Thumbs.db
 .idea/
 apps/extension/dist/
 apps/desktop/dist/
+apps/web/dist/
 apps/mobile/.expo/
 # Bare React Native — native projects are committed (OSS, no Expo prebuild)
 # Uncomment to re-ignore if you switch back to CNG:
