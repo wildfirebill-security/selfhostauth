@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Security vulnerability
+    url: https://github.com/wildfirebill-security/selfhostauth/security/advisories/new
+    about: Do not file public issues for security problems — use private reporting.
+  - name: Discussions / Q&A
+    url: https://github.com/wildfirebill-security/selfhostauth/discussions
+    about: Questions, self-hosting help, or ideas.

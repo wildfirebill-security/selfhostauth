@@ -1,0 +1,28 @@
+version: 2
+updates:
+  # npm — covers pnpm workspaces via the root lockfile
+  - package-ecosystem: npm
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "08:00"
+    open-pull-requests-limit: 10
+    labels: [dependencies, npm]
+    commit-message:
+      prefix: chore
+      include: scope
+
+  # GitHub Actions
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+    labels: [dependencies, github-actions]
+
+  # Docker — server image base (node:24-alpine)
+  - package-ecosystem: docker
+    directory: "/docker"
+    schedule:
+      interval: weekly
+    labels: [dependencies, docker]

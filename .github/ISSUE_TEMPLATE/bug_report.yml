@@ -1,0 +1,63 @@
+name: Bug report
+description: Something isn't working as expected
+labels: [bug]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting — fill this out so we can reproduce quickly.
+  - type: input
+    id: version
+    attributes:
+      label: Version
+      description: Tag or commit (e.g. v0.1.6, main@abc1234)
+      placeholder: v0.1.6
+    validations:
+      required: true
+  - type: dropdown
+    id: component
+    attributes:
+      label: Component
+      multiple: false
+      options:
+        - server
+        - web
+        - desktop
+        - extension
+        - mobile
+        - docker / deploy
+        - docs
+      default: 0
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: Platform
+      description: OS, browser, or device (e.g. Ubuntu 24.04, Windows 11, iOS 18)
+      placeholder: Ubuntu 24.04 + Chrome 128
+  - type: textarea
+    id: repro
+    attributes:
+      label: Steps to reproduce
+      description: Minimal steps, expected vs actual, and logs/screenshots if useful
+      placeholder: |
+        1. Start server with ...
+        2. Register user ...
+        3. See error ...
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Logs / screenshots
+      render: shell
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues
+          required: true
+        - label: I can reproduce on `main`
+          required: false

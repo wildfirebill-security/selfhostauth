@@ -1,0 +1,43 @@
+name: Feature request
+description: Suggest an idea for SelfHostAuth
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem / use case
+      description: What are you trying to do that you can't today?
+      placeholder: As a homelabber I want...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposal
+      description: How should it work? API, UI, or workflow sketch is great.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - server / sync
+        - web
+        - desktop
+        - extension
+        - mobile
+        - deploy / docker
+        - docs / DX
+      default: 0
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives considered
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I searched existing issues / discussions
+          required: true
