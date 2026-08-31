@@ -9,7 +9,7 @@
 [![Self-Hosted](https://img.shields.io/badge/self--hosted-%E2%9C%93-success)](docker/docker-compose.yml)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.7-blue?logo=typescript)](https://www.typescriptlang.org/)
 
-**SelfHostAuth is a self-hosted 2FA authenticator** that syncs your TOTP & HOTP one-time codes across every device without trusting Google, Authy, or any third-party cloud. Run the lightweight **Node.js + SQLite sync server** on your home server, NAS, Raspberry Pi, or VPS, and access your 2FA codes from a native **desktop app (Electron)**, **mobile app (iOS/Android via Expo)**, and **browser extension (Chrome/Edge/Firefox MV3)** — all offline-capable and end-to-end encrypted at rest.
+**SelfHostAuth is a self-hosted 2FA authenticator** that syncs your TOTP & HOTP one-time codes across every device without trusting Google, Authy, or any third-party cloud. Run the lightweight **Node.js + SQLite sync server** on your home server, NAS, Raspberry Pi, or VPS, and access your 2FA codes from a native **desktop app (Electron)**, **mobile app (iOS/Android via bare React Native — 100% OSS, no Expo)**, and **browser extension (Chrome/Edge/Firefox MV3)** — all offline-capable and end-to-end encrypted at rest.
 
 *Keywords: self-hosted authenticator, self-hosted 2FA, open source 2FA, TOTP server, HOTP, OTP authenticator, 2FA sync, privacy authenticator, Google Authenticator alternative, Authy alternative*
 
@@ -70,7 +70,7 @@
 | `apps/server` | **Self-hosted 2FA sync server** (Fastify + SQLite) — the brain |
 | `apps/desktop` | **Desktop authenticator** — Electron for Windows / macOS / Linux |
 | `apps/extension` | **Browser extension** — Chrome / Edge / Firefox (Manifest V3) |
-| `apps/mobile` | **Mobile 2FA app** — Expo (React Native) for iOS & Android |
+| `apps/mobile` | **Mobile 2FA app** — bare React Native 0.76 for iOS & Android (fully OSS) |
 | `docker` | `Dockerfile`, `docker-compose.yml`, `Caddyfile`, `systemd` unit |
 
 ---
@@ -129,17 +129,27 @@ pnpm build              # → dist/
 
 > Requests host permission for your server origin on first connect (MV3 security model).
 
-### iOS / Android Mobile App (Expo)
+### iOS / Android Mobile App (Bare React Native — 100% OSS)
 
-Requires the [Expo](https://expo.dev/) toolchain + Xcode or Android Studio.
+No Expo, no vendor lock-in — pure **React Native 0.76** + `@react-native-clipboard/clipboard`. Requires Xcode (iOS) or Android Studio + JDK 17.
 
 ```bash
 cd apps/mobile
 pnpm install
-npx expo start          # scan QR with Expo Go, or press i / a
+
+# iOS — install pods, then run on simulator/device
+cd ios && pod install && cd ..
+pnpm run ios            # or: npx react-native run-ios
+
+# Android — builds an APK with Gradle
+pnpm run android        # or: npx react-native run-android
+
+# Or build release artifacts directly
+cd android && ./gradlew assembleRelease   # → app/build/outputs/apk/release/
+cd ios && xcodebuild -workspace selfhostauth.xcworkspace -scheme selfhostauth -configuration Release -sdk iphonesimulator -derivedDataPath ../build CODE_SIGNING_ALLOWED=NO build
 ```
 
-TOTP works **offline** via the pure-JS HMAC fallback in `packages/core` — no server round-trip to show a code.
+Native projects (`android/` / `ios/`) are committed (no Expo prebuild). CI builds both on every `workflow_dispatch` via `.github/workflows/mobile-local.yml`. TOTP works **offline** via the pure-JS HMAC fallback in `packages/core`.
 
 ---
 
@@ -209,7 +219,7 @@ pnpm test              # core RFC vectors (12) + server API (9) = 21 tests
 pnpm dev:server        # server watch mode
 pnpm dev:desktop       # Electron + Vite HMR
 pnpm dev:extension     # rebuild extension on change
-pnpm dev:mobile        # expo start
+pnpm --filter @selfhostauth/mobile start  # bare React Native Metro
 ```
 
 The core library is validated against **official RFC 4226 (HOTP), RFC 6238 (TOTP) and RFC 4231 (HMAC) test vectors** for SHA-1, SHA-256 and SHA-512, including the **pure-JS fallback path used on React Native** (no WebCrypto).
@@ -219,7 +229,7 @@ The core library is validated against **official RFC 4226 (HOTP), RFC 6238 (TOTP
 Every push runs on **Ubuntu / Windows / macOS × Node 22 & 24**: build → typecheck → test → live smoke test. Tags `v*` publish:
 - **Desktop installers** to the GitHub Release (Win NSIS, macOS DMG, Linux AppImage/deb/rpm)
 - **Server Docker image** to `ghcr.io/wildfirebill-security/selfhostauth`
-- **Extension zip** + **mobile builds** via EAS (with `EXPO_TOKEN`) or local `expo prebuild` + Gradle/Xcode
+- **Extension zip** + **mobile APK / iOS simulator build** via bare React Native (Gradle / Xcode) — no Expo required
 
 See `.github/workflows/` for details.
 

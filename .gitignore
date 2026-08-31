@@ -15,7 +15,9 @@ Thumbs.db
 apps/extension/dist/
 apps/desktop/dist/
 apps/mobile/.expo/
-apps/mobile/ios/
-apps/mobile/android/
+# Bare React Native — native projects are committed (OSS, no Expo prebuild)
+# Uncomment to re-ignore if you switch back to CNG:
+# apps/mobile/ios/
+# apps/mobile/android/
 coverage/
 apps/extension/selfhostauth-extension.zip

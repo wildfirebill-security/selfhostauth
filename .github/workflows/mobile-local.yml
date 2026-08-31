@@ -1,13 +1,9 @@
 name: Mobile (local build)
 
-# Self-contained alternative to EAS: builds the Expo app on GitHub-hosted
-# runners using Expo prebuild (CNG). No external services needed, but the
-# native toolchains run here:
-#   - Android: unsigned release APK (signed with the debug keystore)
-#   - iOS:     unsigned simulator build (code signing disabled — a real
-#              .ipa requires Apple certs; add them to the runner or use EAS)
-#
-# Trigger with "Run workflow" or on tags.
+# 100% OSS bare React Native — no Expo, no EAS. Builds directly
+# with the Android Gradle Plugin and Xcode. Native projects
+# (android/ ios/) are generated from the open-source React Native
+# template (npx @react-native-community/cli) if not already committed.
 
 on:
   workflow_dispatch:
@@ -32,12 +28,6 @@ jobs:
           node-version: 22
           cache: pnpm
 
-      - name: Install dependencies
-        run: pnpm install --frozen-lockfile
-
-      - name: Build
-        run: pnpm build
-
       - name: Setup JDK
         uses: actions/setup-java@v4
         with:
@@ -47,9 +37,24 @@ jobs:
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Generate native project (prebuild)
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Build packages
+        run: pnpm --filter @selfhostauth/core --filter @selfhostauth/client build
+
+      - name: Generate native projects if missing (OSS)
         working-directory: apps/mobile
-        run: npx expo prebuild --platform android --non-interactive
+        run: |
+          if [ ! -d android ] || [ ! -d ios ]; then
+            echo "Native projects missing — bootstrapping bare React Native 0.76 template (OSS)..."
+            npx --yes @react-native-community/cli@13 init Selfhostauth --version 0.76 --directory /tmp/rn-template --skip-install --npm
+            [ -d android ] || cp -r /tmp/rn-template/android ./android
+            [ -d ios ] || cp -r /tmp/rn-template/ios ./ios
+            # Wire workspace package name
+            sed -i 's/"name": "Selfhostauth"/"name": "@selfhostauth\/mobile"/' package.json 2>/dev/null || true
+          fi
+          ls -d android ios
 
       - name: Build release APK
         working-directory: apps/mobile/android
@@ -84,19 +89,30 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Build
-        run: pnpm build
+      - name: Build packages
+        run: pnpm --filter @selfhostauth/core --filter @selfhostauth/client build
 
-      - name: Generate native project + pods (prebuild)
+      - name: Generate native projects if missing (OSS)
         working-directory: apps/mobile
-        run: npx expo prebuild --platform ios --non-interactive
+        run: |
+          if [ ! -d ios ] || [ ! -d android ]; then
+            echo "Native projects missing — bootstrapping bare React Native 0.76 template (OSS)..."
+            npx --yes @react-native-community/cli@13 init Selfhostauth --version 0.76 --directory /tmp/rn-template --skip-install --npm
+            [ -d ios ] || cp -r /tmp/rn-template/ios ./ios
+            [ -d android ] || cp -r /tmp/rn-template/android ./android
+          fi
+          ls -d android ios
+
+      - name: Install CocoaPods
+        working-directory: apps/mobile/ios
+        run: pod install
 
       - name: Build (simulator, no code signing)
         working-directory: apps/mobile/ios
         run: |
           xcodebuild \
-            -workspace selfhostauth.xcworkspace \
-            -scheme selfhostauth \
+            -workspace Selfhostauth.xcworkspace \
+            -scheme Selfhostauth \
             -configuration Release \
             -sdk iphonesimulator \
             -derivedDataPath ../build \

@@ -1,4 +1,3 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useCallback, useEffect, useRef, useState } from "react";
 import {
   KeyboardAvoidingView,
@@ -6,12 +5,13 @@ import {
   Platform,
   Pressable,
   ScrollView,
+  StatusBar,
   StyleSheet,
   Text,
   TextInput,
   View,
 } from "react-native";
-import * as Clipboard from "expo-clipboard";
+import Clipboard from "@react-native-clipboard/clipboard";
 import {
   VaultItem,
   totp,
@@ -266,7 +266,7 @@ export default function App() {
 
   return (
     <View style={styles.container}>
-      <StatusBar style="light" />
+      <StatusBar barStyle="light-content" backgroundColor={colors.bg} />
       <View style={styles.header}>
         <Text style={styles.brand}>◈ selfhostauth</Text>
         {screen === "vault" && (
@@ -343,7 +343,7 @@ export default function App() {
                   key={c.id}
                   style={styles.item}
                   onPress={() => {
-                    void Clipboard.setStringAsync(c.code);
+                    Clipboard.setString(c.code);
                     setSyncMsg(`Copied ${c.name}`);
                   }}
                 >
