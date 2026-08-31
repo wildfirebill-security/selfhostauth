@@ -1,6 +1,6 @@
 {
   "name": "@selfhostauth/extension",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "private": true,
   "description": "selfhostauth browser extension (Chrome / Edge / Firefox MV3)",
   "type": "module",

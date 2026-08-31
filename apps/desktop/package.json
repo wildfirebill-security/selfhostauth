@@ -1,6 +1,6 @@
 {
   "name": "@selfhostauth/desktop",
-  "version": "0.1.0",
+  "version": "0.1.5",
   "private": true,
   "description": "selfhostauth desktop client (Windows / macOS / Linux)",
   "homepage": "https://github.com/wildfirebill-security/selfhostauth",

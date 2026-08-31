@@ -71,5 +71,12 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: |
-            apps/desktop/dist/installers/**
+            apps/desktop/dist/installers/*.exe
+            apps/desktop/dist/installers/*.dmg
+            apps/desktop/dist/installers/*.AppImage
+            apps/desktop/dist/installers/*.deb
+            apps/desktop/dist/installers/*.rpm
+            apps/desktop/dist/installers/*.zip
+            apps/desktop/dist/installers/*.blockmap
+            apps/desktop/dist/installers/*.yml
             apps/extension/selfhostauth-extension.zip
