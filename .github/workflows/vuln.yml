@@ -58,7 +58,7 @@ jobs:
 
       # ── Source + Docker: Trivy ──
       - name: Trivy fs (source)
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           scan-type: fs
           scan-ref: .
@@ -72,7 +72,7 @@ jobs:
         continue-on-error: true
 
       - name: Trivy image (docker)
-        uses: aquasecurity/trivy-action@0.33.1
+        uses: aquasecurity/trivy-action@0.36.0
         with:
           image-ref: selfhostauth:test
           severity: HIGH,CRITICAL
