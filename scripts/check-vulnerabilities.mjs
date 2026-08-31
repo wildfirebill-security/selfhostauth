@@ -76,8 +76,8 @@ function checkSource() {
     if (out.includes("no leaks") || out === "") findings.push({ severity: "info", title: "gitleaks: no secrets detected", detail: "No hardcoded secrets found in working tree." });
     else findings.push({ severity: "high", title: "gitleaks: potential secrets", detail: out.slice(0, 1200) });
   } else {
-    // fallback simple grep — ignore docs, templates, and the checker itself
-    const hits = sh("git grep -i -E \"(ENCRYPTION_KEY|password|secret).*[:=].{8,}\" -- ':!pnpm-lock.yaml' ':!VULNERABILITIES.md' ':!*.md' ':!.github/*' ':!scripts/check-vulnerabilities.mjs' 2>&1 | head -20");
+    // fallback simple grep — ignore docs, templates, and the checker itself; require assignment to avoid HTML false positives
+    const hits = sh("git grep -i -E \"(ENCRYPTION_KEY|password|secret)\\s*[:=]\\s*['\\\"]?[A-Za-z0-9+/=_-]{8,}\" -- ':!pnpm-lock.yaml' ':!VULNERABILITIES.md' ':!*.md' ':!.github/*' ':!scripts/check-vulnerabilities.mjs' 2>&1 | head -20");
     if (!hits) findings.push({ severity: "info", title: "secrets grep: no hardcoded secrets", detail: "Heuristic grep for hardcoded secrets found nothing (install gitleaks for deeper scan)." });
     else findings.push({ severity: "medium", title: "secrets grep: review hits", detail: hits.slice(0, 800) });
   }
