@@ -4,7 +4,7 @@
 # copy the tree (node_modules store + workspace packages + server app).
 # pnpm uses RELATIVE symlinks on Linux, so the copied layout stays valid.
 
-FROM node:24-alpine AS build
+FROM node:26-alpine AS build
 WORKDIR /app
 RUN corepack enable
 
@@ -26,7 +26,7 @@ RUN pnpm --filter @selfhostauth/server... build && pnpm --filter @selfhostauth/w
 # Prune dev dependencies for a lean runtime image
 RUN pnpm install --prod --frozen-lockfile=false
 
-FROM node:24-alpine AS runtime
+FROM node:26-alpine AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
 COPY --from=build /app/package.json /app/package.json
