@@ -37,8 +37,8 @@ importers:
         specifier: ^25.1.8
         version: 25.1.8(electron-builder-squirrel-windows@25.1.8)
       esbuild:
-        specifier: ^0.25.0
-        version: 0.25.12
+        specifier: ^0.28.2
+        version: 0.28.2
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
@@ -62,8 +62,8 @@ importers:
         specifier: ^0.2.7
         version: 0.2.7
       esbuild:
-        specifier: ^0.25.0
-        version: 0.25.12
+        specifier: ^0.28.2
+        version: 0.28.2
       typescript:
         specifier: ^5.7.2
         version: 5.9.3
@@ -136,8 +136,8 @@ importers:
         specifier: ^22.10.0
         version: 22.20.1
       esbuild:
-        specifier: ^0.25.0
-        version: 0.25.12
+        specifier: ^0.28.2
+        version: 0.28.2
       tsx:
         specifier: ^4.19.2
         version: 4.23.12
@@ -5719,9 +5719,7 @@ snapshots:
     transitivePeerDependencies:
       - '@babel/core'
       - '@babel/preset-env'
-      - bufferutil
       - supports-color
-      - utf-8-validate
 
   '@react-native/normalize-colors@0.76.9': {}
 
